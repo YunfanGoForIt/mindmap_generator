@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mindmap Generator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        #text {
+            width: 400px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mindmap Generator</h1>
+    <p>Please access using the Edge or Chrome browser on your mobile phone or computer</p>
+    <p>CAUTION: The text entered must be logical, and at least with 50 words(English) or 50 characters(Chinese).</p>
+    <p>Enter text to generate a mindmap</p>
+    <p>Processing speed: 10s per 100 words</p>
+    <form action="/result" method="post">
+        <label for="text">Enter text:</label>
+        <textarea id="text" name="text" rows="5" cols="50"></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

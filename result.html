@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mindmap</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+
+        .node text {
+            font: 12px sans-serif;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+        .scrollable-area {
+            width: 960px;
+            height: 800px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Processed Result</h1>
+    <div class="scrollable-area">
+        <svg></svg>
+    </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        let data = {{ res|tojson }}
+
+
+        const width = 960;
+        const height = 800;
+
+        const tree = d3.tree().size([height, width - 160]);
+        const root = d3.hierarchy(data);
+        tree(root);
+
+        const svg = d3.select("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add zoom behavior to SVG
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 10]) // Set the zoom range
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        function zoomed() {
+            g.attr("transform", d3.event.transform);
+        }
+
+        const g = svg.append("g") // Container for all graphical elements
+            .attr("transform", `translate(${width / 2},${height / 2})`);
+
+        const link = g.selectAll(".link")
+            .data(root.descendants().slice(1))
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d => {
+                return "M" + (d.y - width / 2) + "," + (d.x - height / 2)
+                    + "C" + (d.parent.y - width / 2 + 100) + "," + (d.x - height / 2)
+                    + " " + (d.parent.y - width / 2 + 100) + "," + (d.parent.x - height / 2)
+                    + " " + (d.parent.y - width / 2) + "," + (d.parent.x - height / 2);
+            });
+
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+            .attr("transform", d => "translate(" + (d.y - width / 2) + "," + (d.x - height / 2) + ")");
+
+        node.append("circle")
+            .attr("r", 10);
+
+        node.append("text")
+            .attr("dy", 3)
+            .attr("x", d => d.children ? -12 : 12)
+            .style("text-anchor", d => d.children ? "end" : "start")
+            .text(d => d.data.name);
+    </script>
+    <p>Author: Yunfan </p>
+    <p>Acknowledgement: Xiaoli, Cyril, Signskin</p>
+    <p>Large Language Model used: AliCloud QWen-Max</p>
+    <p>Source code: <a href="https://github.com/YunfanGoForIt/mindmap">Github@YunfanGoForIt</a></p>
+</body>
+</html>
