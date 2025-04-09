@@ -3,7 +3,7 @@ import json
 from http import HTTPStatus
 import dashscope
 import re
-dashscope.api_key="sk-d81529d7b5f247858c6c5899d4ad24ab"
+dashscope.api_key=""
 
 app = Flask(__name__)
 
